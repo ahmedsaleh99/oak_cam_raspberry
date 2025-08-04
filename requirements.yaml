@@ -1,8 +1,8 @@
-name: classroom-digital-twin
+name: oakcam
 channels:
   - conda-forge
 dependencies:
   # add your conda dependencies here
   - pip
   - pip:
-      # add your pip dependencies here
+      depthai
