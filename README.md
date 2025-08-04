@@ -12,7 +12,7 @@ This project includes a `Makefile` for managing build and setup tasks, and a Pyt
 
 The `Makefile` provides convenient commands for setting up and managing your development environment. Common targets include:
 
-- **Install dependencies:**  
+- **Install Required Packages:**  
     ```sh
     make init-setup
     ```
