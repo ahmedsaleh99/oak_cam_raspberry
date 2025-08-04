@@ -3,8 +3,10 @@
 ENV_NAME = oakcam
 DEP_FILE = requirements.yaml
 DEV_FILE = requirements-dev.yaml
+# The IP address of the Ubuntu server to sync time with
+UBUNTU_SERVER_IP = 136.165.40.78
 
-.PHONY: init-setup prod-env  dev-env dev-depend format test 
+.PHONY: init-setup config-chrony prod-env  dev-env dev-depend format test 
 
 init-setup:
 	@git config --global user.email "ahmed_saleh93@outlook.com"
@@ -24,6 +26,20 @@ init-setup:
 		echo "export OPENBLAS_CORETYPE=ARMV8" >> ~/.bashrc; \
 	fi
 	@bash -c "source ~/.bashrc"
+
+config-chrony:
+	@sudo apt install -y chrony
+	@sudo apt autoremove -y
+	@echo "Configuring /etc/chrony/chrony.conf to sync with Ubuntu server..."
+	@sudo cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.bak
+	@echo "server $(UBUNTU_SERVER_IP) iburst" | sudo tee /etc/chrony/chrony.conf > /dev/null
+	@echo "allow all" | sudo tee -a /etc/chrony/chrony.conf > /dev/null
+	@echo "local stratum 10" | sudo tee -a /etc/chrony/chrony.conf > /dev/null
+	@echo "logdir /var/log/chrony" | sudo tee -a /etc/chrony/chrony.conf > /dev/null
+	@sudo systemctl restart chrony
+	@sudo systemctl enable chrony
+	@echo "Chrony installed and configured. Current status:"
+	@sudo systemctl status chrony --no-pager
 
 prod-env:
 	@echo "Removing conda environment $(ENV_NAME) if exists..."
